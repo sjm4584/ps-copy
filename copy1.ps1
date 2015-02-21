@@ -52,6 +52,13 @@ function load_ip{
 	foreach ($line in $ip){
 		if($target_ip[$line][0]){
 			write-host "$line -> { " $target_ip[$line][0] " " $target_ip[$line][1] " }"
+			#add IPs to the file
+			Add-Content c:\Users\sean\Desktop\$target_ip[$line] $target_ip[$line][0]
+			Add-Content c:\Users\sean\Desktop\$target_ip[$line] $target_ip[$line][1]
+			
+			#send the IPs for the target to send to
+			copy-item -Path c:\Users\sean\Desktop\$target_ip[$line] -Destination \\$target_ip[$line]\c$\Users\Student\Desktop -recurse -ErrorAction "Stop"
+			
 			$i=$i+1
 		} else{ #not all IPs will have to send files
 			write-host "IPs have been given"
@@ -63,7 +70,8 @@ function load_ip{
 #send files!
 #this probably needs debugging, like a lot
 function send{
-	foreach ($line in $ip){
+	$send_ip = get-content c:\Users\sean\Desktop\$target_ip[$line]
+	foreach ($line in $send_ip){
 		if($target_ip[$line][0]){
 			write-host "[+] Copying shares to: " $target_ip[$line][0] " " $target_ip[$line][1]
 			
